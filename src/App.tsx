@@ -9,7 +9,7 @@ import {
   Container,
   CssBaseline 
 } from '@mui/material';
-
+import AnswerPage from './AnswerPage';
 
 const steps = [
   {
@@ -31,7 +31,7 @@ const steps = [
   },
   {
     id: 2,
-    text: "SSIDの下部に、どういった表示が出ていますか？",
+    text: "SSIDの下部にある表示は、以下のどちらですか？",
     yesText: "インターネットなし、セキュリティ保護あり",
     noText: "接続済み、セキュリティ保護あり",
     nextYes: 3,
@@ -51,8 +51,9 @@ const steps = [
     id: 4,
     text: "帯電による一時的な不具合の可能性が高いです。充電アダプタやLANケーブルなど、PCに接続している外部媒体をすべて取り外して次ページの操作で完全シャットダウン（放電）を行ってください",
     yesText: "次へ",
-    nextYes: 5,
+    nextYes: 5, 
     backNo: 3,
+    isAnswer: true,
   },
   {
     id: 5,
@@ -60,6 +61,7 @@ const steps = [
     yesText: "スタートへ戻る",
     nextYes: 0,
     backNo: 4,
+    isAnswer: true,
   }
 ];
 
@@ -88,22 +90,41 @@ export default function App() {
                 <Typography variant="h6" sx={{ color: 'white' }}>ネットワーク診断</Typography>
               </Box>
               <CardContent sx={{ p: 4, textAlign: 'center' }}>
+ <CardContent sx={{ p: 4, textAlign: 'center' }}>
+            
+            {currentStep.isAnswer || currentStep.nextYes === undefined ? (
+              <AnswerPage
+                text={currentStep.text}
+                yesText={currentStep.yesText}
+                nextYes={currentStep.nextYes}
+                onNext={(nextId) => handleChoice(nextId)}
+                onBack={() => handleChoice(currentStep.backNo || 0)}
+              />
+            ) : (
+              <>
                 <Typography variant="h5" sx={{ mb: 4 }}>{currentStep.text}</Typography>
+                
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Button variant="contained" size="large" onClick={() => handleChoice(currentStep.nextYes)}>
+                  <Button variant="contained" size="large" onClick={() => handleChoice(currentStep.nextYes!)}>
                     {currentStep.yesText}
                   </Button>
+
                   {currentStep.noText && (
                     <Button variant="outlined" size="large" onClick={() => handleChoice(currentStep.nextNo!)}>
                       {currentStep.noText}
                     </Button>
                   )}
+
                   {currentStep.backNo !== undefined && (
-            <Button variant="text" size="medium" onClick={() => handleChoice(currentStep.backNo)}>
-              1つ前に戻る
-            </Button>
-          )}
+                    <Button variant="text" size="medium" onClick={() => handleChoice(currentStep.backNo)}>
+                      1つ前に戻る
+                    </Button>
+                  )}
                 </Box>
+              </>
+            )}
+
+          </CardContent>
               </CardContent>
             </Card>
           </Fade>
