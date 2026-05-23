@@ -66,15 +66,29 @@ const steps = [
 ];
 
 export default function App() {
+  // 💡 画面の状態を管理する設定（'start': 開始, 'device': 機種選択, 'diagnostic': 診断中）
+  const [phase, setPhase] = useState<'start' | 'device' | 'diagnostic'>('start');
   const [stepId, setStepId] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
+  const [device, setDevice] = useState<string>(''); // 選んだ機種を保存する場所
 
-  const currentStep = steps.find(s => s.id === stepId) || steps[0];
+  const currentStep = steps.find((s) => s.id === stepId) || steps[0];
 
   const handleChoice = (nextId: number) => {
     setIsAnimating(false);
     setTimeout(() => {
       setStepId(nextId);
+      setIsAnimating(true);
+    }, 200);
+  };
+
+  // アプリをはじめからやり直す処理
+  const resetApp = () => {
+    setIsAnimating(false);
+    setTimeout(() => {
+      setPhase('start');
+      setStepId(0);
+      setDevice('');
       setIsAnimating(true);
     }, 200);
   };
@@ -92,36 +106,78 @@ export default function App() {
               <CardContent sx={{ p: 4, textAlign: 'center' }}>
  <CardContent sx={{ p: 4, textAlign: 'center' }}>
             
-            {currentStep.isAnswer || currentStep.nextYes === undefined ? (
-              <AnswerPage
-                text={currentStep.text}
-                yesText={currentStep.yesText}
-                nextYes={currentStep.nextYes}
-                onNext={(nextId) => handleChoice(nextId)}
-                onBack={() => handleChoice(currentStep.backNo || 0)}
-              />
-            ) : (
-              <>
-                <Typography variant="h5" sx={{ mb: 4 }}>{currentStep.text}</Typography>
-                
+ {/* --- ① スタート画面 --- */}
+            {phase === 'start' && (
+              <Box>
+                <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>こんにちは</Typography>
+                <Typography variant="body1" sx={{ mb: 4, color: 'text.secondary' }}>
+                  PCのトラブルを一緒に解決しましょう。
+                </Typography>
+                <Button variant="contained" size="large" fullWidth onClick={() => setPhase('device')}>
+                  診断をはじめる
+                </Button>
+              </Box>
+            )}
+
+            {/* --- ② 機種選択画面 --- */}
+            {phase === 'device' && (
+              <Box>
+                <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>お使いのPCを選んでください</Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Button variant="contained" size="large" onClick={() => handleChoice(currentStep.nextYes!)}>
-                    {currentStep.yesText}
-                  </Button>
-
-                  {currentStep.noText && (
-                    <Button variant="outlined" size="large" onClick={() => handleChoice(currentStep.nextNo!)}>
-                      {currentStep.noText}
+                  {['Surface', 'Dell', 'HP', 'その他'].map((name) => (
+                    <Button key={name} variant="outlined" size="large" onClick={() => {
+                      setDevice(name);
+                      setPhase('diagnostic');
+                    }}>
+                      {name}
                     </Button>
-                  )}
-
-                  {currentStep.backNo !== undefined && (
-                    <Button variant="text" size="medium" onClick={() => handleChoice(currentStep.backNo)}>
-                      1つ前に戻る
-                    </Button>
-                  )}
+                  ))}
                 </Box>
-              </>
+                <Button variant="text" size="medium" onClick={() => setPhase('start')} sx={{ mt: 2 }}>
+                  最初に戻る
+                </Button>
+              </Box>
+            )}
+
+            {/* --- ③ 診断画面 --- */}
+            {phase === 'diagnostic' && (
+              <Box>
+                {currentStep.isAnswer || currentStep.nextYes === undefined ? (
+                  <AnswerPage
+                    text={currentStep.text}
+                    yesText={currentStep.yesText}
+                    nextYes={currentStep.nextYes}
+                    onNext={(nextId) => {
+                      if (nextId === 0) resetApp();
+                      else handleChoice(nextId);
+                    }}
+                    onBack={() => handleChoice(currentStep.backNo || 0)}
+                  />
+                ) : (
+                  <>
+                    <Typography variant="h5" sx={{ mb: 4 }}>{currentStep.text}</Typography>
+                    
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Button variant="contained" size="large" onClick={() => handleChoice(currentStep.nextYes!)}>
+                        {currentStep.yesText}
+                      </Button>
+
+                      {currentStep.noText && (
+                        <Button variant="outlined" size="large" onClick={() => handleChoice(currentStep.nextNo!)}>
+                          {currentStep.noText}
+                        </Button>
+                      )}
+
+                      <Button variant="text" size="medium" onClick={() => {
+                        if (stepId === 0) setPhase('device');
+                        else handleChoice(currentStep.backNo || 0);
+                      }}>
+                        1つ前に戻る
+                      </Button>
+                    </Box>
+                  </>
+                )}
+              </Box>
             )}
 
           </CardContent>
