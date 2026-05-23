@@ -124,7 +124,7 @@ export default function App() {
               <Box>
                 <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>お使いのPCを選んでください</Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {['Surface', 'Dell', 'HP', 'その他'].map((name) => (
+                  {['Surface', 'Dell'].map((name) => (
                     <Button key={name} variant="outlined" size="large" onClick={() => {
                       setDevice(name);
                       setPhase('diagnostic');
@@ -133,15 +133,19 @@ export default function App() {
                     </Button>
                   ))}
                 </Box>
-                <Button variant="text" size="medium" onClick={() => setPhase('start')} sx={{ mt: 2 }}>
-                  最初に戻る
-                </Button>
+              
               </Box>
             )}
 
             {/* --- ③ 診断画面 --- */}
             {phase === 'diagnostic' && (
               <Box>
+                <Typography 
+  variant="caption" 
+  sx={{ display: 'block', mb: 2, color: 'text.secondary', fontSize: '0.75rem' }}
+>
+  選択中の機種: {device}
+</Typography>
                 {currentStep.isAnswer || currentStep.nextYes === undefined ? (
                   <AnswerPage
                     text={currentStep.text}
@@ -172,7 +176,7 @@ export default function App() {
                         if (stepId === 0) setPhase('device');
                         else handleChoice(currentStep.backNo || 0);
                       }}>
-                        1つ前に戻る
+                        機種選択へ戻る
                       </Button>
                     </Box>
                   </>
