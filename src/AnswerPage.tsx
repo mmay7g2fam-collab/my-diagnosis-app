@@ -17,7 +17,7 @@ export default function AnswerPage({ text, yesText, nextYes, onNext, onBack }: A
         🎉 診断結果・対処法
       </Typography>
 
-      <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6, textAlign: 'left', px: 2 }}>
+      <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6, textAlign: 'center', px: 2 }}>
         {text}
       </Typography>
       

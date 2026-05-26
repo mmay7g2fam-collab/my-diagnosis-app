@@ -49,7 +49,9 @@ const steps = [
   },
   {
     id: 4,
-    text: "帯電による一時的な不具合の可能性が高いです。充電アダプタやLANケーブルなど、PCに接続している外部媒体をすべて取り外して次ページの操作で完全シャットダウン（放電）を行ってください",
+    text: `帯電による一時的な不具合の可能性が高いです。
+充電アダプタやLANケーブルなど、PCに接続している外部媒体をすべて取り外して、
+次ページの操作で完全シャットダウン（放電）を行ってください`,
     yesText: "次へ",
     nextYes: 5, 
     backNo: 3,
@@ -57,7 +59,14 @@ const steps = [
   },
   {
     id: 5,
-    text: "※シャットダウン後、必ず30分間以上は放置（放電）してください※放電中、PCの操作や取り外した外部媒体などの取り付けを一切行わないでください※放電後、電源を入れて改善を確認してくださいQ もし改善しなかったら？管理者にお問い合わせいただき、放電を実施するも改善がなかった旨を申し伝えください",
+    text: `※シャットダウン後、必ず30分間以上は放置（放電）してください
+※放電中、PCの操作や取り外した外部媒体などの取り付けを
+一切行わないでください
+※放電後、電源を入れて改善を確認してください
+
+Q もし改善しなかったら？
+管理者にお問い合わせいただき、
+放電を実施するも改善がなかった旨を申し伝えください`,
     yesText: "スタートへ戻る",
     nextYes: 0,
     backNo: 4,
@@ -97,7 +106,7 @@ export default function App() {
     <React.Fragment>
       <CssBaseline />
       <Box sx={{ bgcolor: '#f0f2f5', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-          <Container maxWidth={false} sx={{ maxWidth: '700px' }}>
+          <Container maxWidth={false} sx={{ maxWidth: '900px' }}>
           <Fade in={isAnimating}>
             <Card sx={{ borderRadius: 4, boxShadow: 3 }}>
               <Box sx={{ bgcolor: '#1976d2', p: 2, textAlign: 'center' }}>
@@ -176,7 +185,7 @@ export default function App() {
                         if (stepId === 0) setPhase('device');
                         else handleChoice(currentStep.backNo || 0);
                       }}>
-                        機種選択へ戻る
+                        戻る
                       </Button>
                     </Box>
                   </>
