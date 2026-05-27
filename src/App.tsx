@@ -11,6 +11,8 @@ import {
 } from '@mui/material';
 import AnswerPage from './AnswerPage';
 
+// TODO:こいつらはconstantsに移動していい
+// 固定値は基本的にconstant配下
 const steps = [
   {
     id: 0,
@@ -75,6 +77,7 @@ Q もし改善しなかったら？
 ];
 
 export default function App() {
+  // TODO:useStateの型は別で定義してexportしてから使いたい
   // 💡 画面の状態を管理する設定（'start': 開始, 'device': 機種選択, 'diagnostic': 診断中）
   const [phase, setPhase] = useState<'start' | 'device' | 'diagnostic'>('start');
   const [stepId, setStepId] = useState(0);
@@ -102,6 +105,8 @@ export default function App() {
     }, 200);
   };
 
+  // TODO:スタート、機種選択、診断は各々別ファイルにして呼び出す形にすると綺麗になるよ
+  // あとインデントの崩れが気になるのでそこはマストで直してね～
   return (
     <React.Fragment>
       <CssBaseline />
@@ -133,7 +138,10 @@ export default function App() {
               <Box>
                 <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>お使いのPCを選んでください</Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  // TODO:ここの機種名もべた書きじゃなくてconstantとかに変数で持ちたい
                   {['Surface', 'Dell'].map((name) => (
+                    // TODO:他のonClickもですが、関数として定義してからonClickに渡してあげたいです
+                    //  実は()=> の形で定義すると画面を開いた段階で無駄に動くはず....なによりも可読性が良くなるよ～
                     <Button key={name} variant="outlined" size="large" onClick={() => {
                       setDevice(name);
                       setPhase('diagnostic');
